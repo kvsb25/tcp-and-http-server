@@ -20,6 +20,24 @@ int main()
         }
         /********************************************************/
 
+        SOCKET main_socket = INVALID_SOCKET;
+        main_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP); // (int domain, int type, int protocol) | AF_INET -> IPv4; SOCK_STREAM -> Connection oriented; IPPROTO_TCP -> TCP IP protocol
+
+        if (main_socket == INVALID_SOCKET)
+        {
+            std::cout << "Error at socket(): " << WSAGetLastError() << std::endl;
+            WSACleanup(); // Clean up before exiting
+            return 1;
+        }
+
+
+
+        while (true)
+        {
+        };
+
+        closesocket(main_socket);
+        WSACleanup();
     }
     catch (const std::exception &e)
     {
