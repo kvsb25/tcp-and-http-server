@@ -1,0 +1,13 @@
+class TcpServer{
+    private:
+        SOCKET socket;
+        SOCKET client_socket;
+        
+    public:
+        TcpServer(){}
+        ~TcpServer(){}
+}
+
+class httpServer{
+
+}
