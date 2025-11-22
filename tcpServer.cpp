@@ -7,7 +7,7 @@
 using namespace std;
 
 #define DEFAULT_PORT 8080
-#define DEFAULT_BUFLEN 512
+#define DEFAULT_BUFLEN 8192
 
 int main()
 {
@@ -106,7 +106,7 @@ int main()
 
             //***************************************** Process data *****************************************
             string request(buff); // converting char* to std::string
-            buff = '\0';
+            buff[0] = '\0';
 
             int first_space = request.find(' ');
             int second_space = request.find(' ', first_space + 1);
