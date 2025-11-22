@@ -16,7 +16,7 @@ int main()
         // ******************Initialize Winsock******************
         WSADATA wsaData;
         int iResult;
-        char *buff = new char[DEFAULT_BUFLEN];
+        char * buff = new char[DEFAULT_BUFLEN];
         // int buffLen = DEFAULT_BUFLEN;
 
         iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
@@ -88,6 +88,11 @@ int main()
                 {
                     totalBytesRecv += bytesRecv;
                     cout << "bytes received: " << bytesRecv << std::endl;
+
+                    if (strstr(buff, "\r\n\r\n")) {
+                        break;
+                    }
+
                 } else {
                     cout << "recv failed: " << WSAGetLastError() << std::endl;
                     WSACleanup();
@@ -98,7 +103,7 @@ int main()
 
             //***************************************** Process data *****************************************
             string request(buff); // converting char* to std::string
-
+            buff = '\0';
             int first_space = request.find(' ');
             int second_space = request.find(' ', first_space + 1);
             int third_space = request.find('\r\n', second_space + 1);
