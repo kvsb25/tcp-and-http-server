@@ -25,7 +25,7 @@ int main()
 
         if (main_socket == INVALID_SOCKET)
         {
-            std::cout << "Error at socket(): " << WSAGetLastError() << std::endl;
+            std::cout << "Error at main_socket: " << WSAGetLastError() << std::endl;
             WSACleanup(); // Clean up before exiting
             return 1;
         }
@@ -46,8 +46,9 @@ int main()
             return 1;
         }
 
-        //listen
-        if(listen(main_socket, 20) == SOCKET_ERROR){
+        // listen
+        if (listen(main_socket, 20) == SOCKET_ERROR)
+        {
             std::cout << "Listen failed with error: " << WSAGetLastError() << std::endl;
             WSACleanup();
             return 1;
@@ -56,11 +57,18 @@ int main()
         // main loop
         while (true)
         {
-            
+            SOCKET client_socket = accept(main_socket, NULL, NULL);
+            if (client_socket == INVALID_SOCKET)
+            {
+                std::cout << "Error at client_socket: " << WSAGetLastError() << std::endl;
+                WSACleanup(); // Clean up before exiting
+                return 1;
+            }
         };
 
         iResult = closesocket(main_socket);
-        if(iResult == SOCKET_ERROR){
+        if (iResult == SOCKET_ERROR)
+        {
             std::cout << "socket close failed with error: " << WSAGetLastError() << std::endl;
             WSACleanup();
             return 1;
