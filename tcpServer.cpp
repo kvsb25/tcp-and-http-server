@@ -4,6 +4,9 @@
 #include <winsock2.h>
 using namespace std;
 
+#define DEFAULT_PORT 8080
+#define DEFAULT_BUFLEN 512
+
 int main()
 {
     try
@@ -11,6 +14,8 @@ int main()
         // ******************Initialize Winsock******************
         WSADATA wsaData;
         int iResult;
+        char *buff = new char[DEFAULT_BUFLEN];
+        // int buffLen = DEFAULT_BUFLEN;
 
         iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
         if (iResult != 0)
@@ -32,8 +37,8 @@ int main()
 
         // address structure to bind to the socket
         sockaddr_in service;
-        service.sin_family = AF_INET;   // supports IPv4 -- must match the socket domain
-        service.sin_port = htons(8080); // port at which the socket will exist
+        service.sin_family = AF_INET;           // supports IPv4 -- must match the socket domain
+        service.sin_port = htons(DEFAULT_PORT); // port at which the socket will exist
         // using htons to convert host byte order to network byte order
         service.sin_addr.s_addr = INADDR_ANY; // it is the IP of the network over which the socket must be active to receive and send data packets. INADDR_ANY represents all network interfaces including local host network
 
@@ -57,6 +62,7 @@ int main()
         // main loop
         while (true)
         {
+            // accepting client connection, and assigning a socket for data exchange
             SOCKET client_socket = accept(main_socket, NULL, NULL);
             if (client_socket == INVALID_SOCKET)
             {
@@ -64,6 +70,18 @@ int main()
                 WSACleanup(); // Clean up before exiting
                 return 1;
             }
+
+            int bytesRecv;
+            do
+            {
+                bytesRecv = recv(client_socket, buff, (int)DEFAULT_BUFLEN, 0);
+                if (bytesRecv > 0)
+                {
+                    cout << "bytes received: " << bytesRecv << std::endl;
+                } else {
+                    cout << "recv failed: " << WSAGetLastError() << std::endl;
+                }
+            } while(bytesRecv > 0);
         };
 
         iResult = closesocket(main_socket);
