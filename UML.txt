@@ -1,6 +1,9 @@
+/**************************************TCP_LAYER**************************************/
+
 class ClientSession{
     private:
         SOCKET socket;
+    public:
         char* buff;
     public:
         ClientSession(SOCKET, char*);
@@ -14,37 +17,82 @@ class TcpServer{
         SOCKET main_socket;
         sockaddr_in server_addr;
     public:
-        TcpServer(SOCKET, sockaddr_in);
+        TcpServer(SOCKET&, sockaddr_in&); // bind and listen
         ~TcpServer();
+        void start(Pipeline& pipe); // main loop
 }
+
+/**************************************HTTP_LAYER**************************************/
 
 class HttpServer{
 
 }
 
-class Middleware{
-    Err err;
-    Request req;
-    Response res;
-    Next next;
+struct Request{
 
-    void handler(Request req, Response res, std::function<void(Request, Response)> callback){
-        callback(req, res);
-        return 
-    }
+}
 
-    void handler(Request req, Response res, Next next, std::function<void(Request, Response, Next)> callback){
-        callback(req, res);
-        return 
-    }
+struct Response{
 
-    void handler(Request req, Response res, Next next, std::function<void(Request, Response, Next)> callback){
-        callback(req, res);
-        return 
+}
+
+/**************************************SERVICE_LAYER**************************************/
+
+class Service{
+    Service(Pipeline& pipe); //constructor
+}
+
+/**********************************MIDDLEWARE_AND_PIPELINE********************************/
+
+class MiddlewareBase{
+    //Err err;
+    //Request req;
+    //Response res;
+    //Next next;
+
+    virtual void handler() = 0;
+
+    //void handler(Request& req, Response& res, std::function<void(Request, Response)> callback){
+    //    callback(req, res);
+    //    return 
+    //}
+
+    //void handler(Request& req, Response& res, Next& next, std::function<void(Request&, Response&, Next&)> callback){
+    //    callback(req, res);
+    //    return 
+    //}
+
+    //void handler(Error& err, Request& req, Response& res, Next& next, std::function<void(Request&, Response&, Next&)> callback){
+    //    callback(req, res);
+    //    return 
+    //}
+}
+
+class DefaultMiddleware : public MiddlewareBase{
+
+
+    void (*handler)(Request&, Response&, Next&);
+    
+    public:
+    DefaultMiddleware(function<void(Request&, Response&, Next&)> callback){
+        this.handler = callback;
     }
 }
 
-/**********************************************************************/
+class PathMiddleware : public MiddlewareBase{
+
+    HTTP_METHOD method;
+    string path;
+    void (*handler)(Request&, Response&);
+
+    PathMiddleware(HTTP_METHOD methodIn, string pathIn, function<void(Request&, Response&)>& callback): method(methodIn), path(pathIn), handler(&callback) {}
+}
+
+class ErrorMiddleware : public MiddlewareBase{
+    /**tentative**/
+}
+
+/*********************************APPLICATION_INTERFACE*************************************/
 
 API: app.listen(port, handler()):- start a thread initializing a TcpServer object with port.
      app.use(handler(req:Request, res:Response, next:Next)):- add the param handler to the main middleware stack
@@ -53,9 +101,10 @@ App::listen(int port)
 
 class App{
     public:
-    middleware* pipeline;
+    Pipeline* pipe;
     TcpServer server;
-    HttpServer http;
+    //HttpServer http; // may be not needed
+    //Service service; // may be not needed
 
     App();
     ~App();
