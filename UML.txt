@@ -19,77 +19,78 @@ class TcpServer{
     public:
         TcpServer(SOCKET&, sockaddr_in&); // bind and listen
         ~TcpServer();
-        void start(Pipeline& pipe); // main loop
+        void start(vector<Middleware*>& stack); // main loop
 }
 
 /**************************************HTTP_LAYER**************************************/
+namespace http{
+    struct Request{
 
-class HttpServer{
+    }
 
+    struct Response{
+
+        Response(){
+            // set default response, hence initialize the attributes of response body
+        }
+    }
+
+    class Server{
+
+        Request& parseRequest(string rawRequest);
+        string constructResponse(Response& response);
+    }
 }
-
-struct Request{
-
-}
-
-struct Response{
-
-}
-
 /**************************************SERVICE_LAYER**************************************/
 
 class Service{
-    Service(Pipeline& pipe); //constructor
+    vector<Middleware*> stack;
+    function<void(http::Err)> next;
+
+    Service(vector<Middleware*>& s) : stack(s); //constructor
+    
+    // all the opertations on the stack lie in this class
 }
 
 /**********************************MIDDLEWARE_AND_PIPELINE********************************/
 
-class MiddlewareBase{
-    //Err err;
-    //Request req;
-    //Response res;
-    //Next next;
-
-    virtual void handler() = 0;
-
-    //void handler(Request& req, Response& res, std::function<void(Request, Response)> callback){
-    //    callback(req, res);
-    //    return 
-    //}
-
-    //void handler(Request& req, Response& res, Next& next, std::function<void(Request&, Response&, Next&)> callback){
-    //    callback(req, res);
-    //    return 
-    //}
-
-    //void handler(Error& err, Request& req, Response& res, Next& next, std::function<void(Request&, Response&, Next&)> callback){
-    //    callback(req, res);
-    //    return 
-    //}
+enum class MiddlewareType {
+    DEFAULT,
+    PATH,
+    ERR
 }
 
-class DefaultMiddleware : public MiddlewareBase{
+enum class HttpMethod{
+    GET,
+    POST
+};
 
-
-    void (*handler)(Request&, Response&, Next&);
-    
+class Middleware {
     public:
-    DefaultMiddleware(function<void(Request&, Response&, Next&)> callback){
-        this.handler = callback;
-    }
+    MiddlewareType type;
+
+    protected:
+    Middleware(MiddlewareType t) : type(t) {}
 }
 
-class PathMiddleware : public MiddlewareBase{
+class DefaultMiddleware : public Middleware{
+    function<void(Request&, Response&, Next&)> handler;
 
-    HTTP_METHOD method;
+    DefaultMiddleware(function<void(Request&, Response&, Next&)> callback) : Middleware(MiddlewareType::DEFAULT), handler(callback) {}
+}
+
+class PathMiddleware : public Middleware{
+    HttpMethod method;
     string path;
-    void (*handler)(Request&, Response&);
+    function <void(Request&, Response&)> handler;
 
-    PathMiddleware(HTTP_METHOD methodIn, string pathIn, function<void(Request&, Response&)>& callback): method(methodIn), path(pathIn), handler(&callback) {}
-}
+    PathMiddleware(HttpMethod m, string p, function<void(Request&, Response&)> callback) : Middleware(MiddlewareType::PATH), method(m), path(p), handler(callback) {}
+};
 
-class ErrorMiddleware : public MiddlewareBase{
-    /**tentative**/
+class ErrorMiddleware : public Middleware{
+    function <void(Error&, Request&, Response&, Next)> handler;
+
+    ErrorMiddleware(function <void(Error&, Request&, Response&, Next)> callback) : Middleware(MiddlewareType::ERR), handler(callback);
 }
 
 /*********************************APPLICATION_INTERFACE*************************************/
@@ -101,14 +102,12 @@ App::listen(int port)
 
 class App{
     public:
-    Pipeline* pipe;
+    vector<Middleware*> pipe;
     TcpServer server;
-    //HttpServer http; // may be not needed
-    //Service service; // may be not needed
 
     App();
     ~App();
-    void listen(int port, function<void(string)> callback);
+    void listen(int port, function<void(string)> callback = NULL);
     App use(function<void(Request, Response)> callback); // use method chaining here and overloading for each type of callback as in middleware class
     App use(string method, string path, function<void(Request, Response)> callback); // use method chaining here and overloading for each type of callback as in middleware class
 }
