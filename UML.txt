@@ -19,19 +19,50 @@ class TcpServer{
     public:
         TcpServer(SOCKET&, sockaddr_in&); // bind and listen
         ~TcpServer();
-        void start(vector<Middleware*>& stack); // main loop
+        void start()// main loop
 }
 
 /**************************************HTTP_LAYER**************************************/
-namespace http{
-    struct Request{
 
+namespace http{
+
+    unordered_map<int, string> status_messages; //predefined map for status codes and their associated messages
+
+    struct Request{
+        string method;
+        string path;
+        unordered_map<string, string> pathParams;
+        unordered_map<string, string> queryParams;
+        string version;
+        unordered_map<string, string> headers;
+        string body;
     }
 
     struct Response{
 
+        int status_code;
+        string status_message;
+        unordered_map<string, string> headers;
+        string body;
+        
         Response(){
             // set default response, hence initialize the attributes of response body
+        }
+
+        Response& status(int s){
+            this.status_code = s;
+            this.status_message = status_messages[s];
+            return *this;
+        }
+
+        Response& header(string k, string val){
+            this.headers[k] = val;
+            return *this;
+        }
+
+        Response& send(string data){
+            this.body = data;
+            return *this;
         }
     }
 
@@ -40,16 +71,6 @@ namespace http{
         Request& parseRequest(string rawRequest);
         string constructResponse(Response& response);
     }
-}
-/**************************************SERVICE_LAYER**************************************/
-
-class Service{
-    vector<Middleware*> stack;
-    function<void(http::Err)> next;
-
-    Service(vector<Middleware*>& s) : stack(s); //constructor
-    
-    // all the opertations on the stack lie in this class
 }
 
 /**********************************MIDDLEWARE_AND_PIPELINE********************************/
@@ -62,7 +83,8 @@ enum class MiddlewareType {
 
 enum class HttpMethod{
     GET,
-    POST
+    POST,
+    ...
 };
 
 class Middleware {
@@ -108,6 +130,25 @@ class App{
     App();
     ~App();
     void listen(int port, function<void(string)> callback = NULL);
-    App use(function<void(Request, Response)> callback); // use method chaining here and overloading for each type of callback as in middleware class
-    App use(string method, string path, function<void(Request, Response)> callback); // use method chaining here and overloading for each type of callback as in middleware class
+    App& use(function<void(Request, Response)> callback); // use method chaining here and overloading for each type of callback as in middleware class
+    App& use(string method, string path, function<void(Request, Response)> callback); // use method chaining here and overloading for each type of callback as in middleware class
+
+    http::Response& handle(https::Request& req, https::Response& res){}
 }
+
+NOTE: while passing lambda functions to app.use() make sure that db instances or anything else that needs to be carried with the function in the memory
+shall be mentioned in the closures
+
+
+100 Continue
+200 OK
+201 Created
+301 Moved Permanently
+302 Found
+400 Bad Request
+401 Unauthorized
+403 Forbidden
+404 Not Found
+405 Method Not Allowed
+500 Internal Server Error
+503 Service Unavailable
