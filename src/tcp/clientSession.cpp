@@ -2,7 +2,15 @@
 
 ClientSession::ClientSession(SOCKET& s) : socket(s), buff(DEFAULT_BUFLEN){}
 
-ClientSession::~ClientSession(){}
+ClientSession::~ClientSession(){
+    if(closesocket(socket) == SOCKET_ERROR) {
+        std::cout << "Client Socket close failed with error: "
+            << WSAGetLastError() 
+            << std::endl;
+    }
+
+    buff.clear();
+}
 
 std::string ClientSession::recvFromClient(){
     int bytesRecv;
