@@ -15,6 +15,7 @@ ClientSession::~ClientSession(){
 std::string ClientSession::recvFromClient(){
     int bytesRecv;
     int totalBytesRecv = 0;
+    int retry = 5;
 
     if(buff.empty())
         buff.resize(DEFAULT_BUFLEN);
@@ -35,10 +36,16 @@ std::string ClientSession::recvFromClient(){
         // check if all data received 
         if(bytesRecv > 0){
             totalBytesRecv += bytesRecv;
+            retry = 5;
         } else if(bytesRecv == 0) {
             break;
         } else { // error
-            std::cerr << "recv failed: " << WSAGetLastError() << std::endl;
+            
+            int err = WSAGetLastError();
+            if(err == WSAEWOULDBLOCK){
+                if(retry-- > 0) continue;
+                break;
+            };
             return "";
         }
     }
@@ -70,9 +77,7 @@ void ClientSession::sendToClient(const std::string& res){
 
             // retry sending
             if(err == WSAEWOULDBLOCK || err == WSAEINTR || err == WSAEINVAL){
-                if(retry-- > 0){
-                    continue;
-                }
+                if(retry-- > 0) continue;
                 break;
             };
 
