@@ -25,6 +25,7 @@ std::string ClientSession::recvFromClient(){
             buff.resize(buff.size()*2);
         }
 
+        // hard limit protection
         if(buff.size() > (int)MAX_REQUEST_SIZE){
             std::cout << "Request rejected, too large." << std::endl;
             break;
@@ -90,4 +91,7 @@ void ClientSession::sendToClient(const std::string& res){
     }
 }
 
-// apply hard limit protection in recvFromClient
+void ClientSession::closeSession(){
+    buff.clear();
+    closesocket(socket);
+}
