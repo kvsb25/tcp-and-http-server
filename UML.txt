@@ -26,7 +26,7 @@ class TcpServer{
 
 namespace http{
 
-    unordered_map<int, string> status_messages; //predefined map for status codes and their associated messages
+    extern unordered_map<int, string> status_messages; //predefined map for status codes and their associated messages
 
     struct Request{
         string method;

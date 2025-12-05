@@ -52,6 +52,7 @@ std::string ClientSession::recvFromClient(){
                 if(retry-- > 0) continue;
                 break;
             };
+            closeSession();
             return "";
         }
     }
@@ -84,9 +85,10 @@ void ClientSession::sendToClient(const std::string& res){
             // retry sending
             if(err == WSAEWOULDBLOCK || err == WSAEINTR || err == WSAEINVAL){
                 if(retry-- > 0) continue;
+                closeSession();
                 break;
             };
-
+            closeSession();
         }
     }
 }
