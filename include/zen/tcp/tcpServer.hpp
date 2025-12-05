@@ -10,6 +10,7 @@ void log(const std::string& message){
 void exitWithError(const std::string& errorMessage){
     std::cerr << WSAGetLastError() << std::endl;
     log("ERROR: " + errorMessage);
+    WSACleanup();
     exit(1);
 }
 
