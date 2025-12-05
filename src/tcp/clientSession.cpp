@@ -18,11 +18,16 @@ std::string ClientSession::recvFromClient(){
     int retry = 5;
 
     if(buff.empty())
-        buff.resize(DEFAULT_BUFLEN);
+        buff.resize((int)DEFAULT_BUFLEN);
 
     while(true){
         if( buff.size() == totalBytesRecv){
             buff.resize(buff.size()*2);
+        }
+
+        if(buff.size() > (int)MAX_REQUEST_SIZE){
+            std::cout << "Request rejected, too large." << std::endl;
+            break;
         }
 
         // call recv(for client's socket, buff starting mem addr, available space that can be filled, remote entity closes the connection)

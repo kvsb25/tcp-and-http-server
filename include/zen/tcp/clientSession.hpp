@@ -5,6 +5,7 @@
 #include<winsock2.h>
 
 #define DEFAULT_BUFLEN 8192
+#define MAX_REQUEST_SIZE 5242880 // 5MB
 
 class ClientSession{
 private:
