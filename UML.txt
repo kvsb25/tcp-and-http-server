@@ -26,7 +26,13 @@ class TcpServer{
 
 namespace http{
 
-    extern unordered_map<int, string> status_messages; //predefined map for status codes and their associated messages
+    enum class method{
+        GET,
+        POST,
+        ...
+    };
+
+    unordered_map<int, string> status_messages; //predefined map for status codes and their associated messages
 
     struct Request{
         string method;
@@ -80,12 +86,6 @@ enum class MiddlewareType {
     PATH,
     ERR
 }
-
-enum class HttpMethod{
-    GET,
-    POST,
-    ...
-};
 
 class Middleware {
     public:
