@@ -4,8 +4,8 @@
 
 namespace http{
     struct Response{
-        int status_code = 200;
-        std::string status_message = "OK";
+        int status_code;
+        std::string status_message;
         std::unordered_map<std::string, std::string> headers;
         std::string body;
 
