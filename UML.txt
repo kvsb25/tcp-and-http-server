@@ -161,7 +161,7 @@ while(true){
     clientSession cs(client_socket);
     string data = cs.recvFromClient(); // remove retry logic or add logic to exit thread on TTL exceed
     
-    http::Request* req = &http.parse(data);
+    http::Request* req = &http::parse(data);
     http::Response* res = new http::Response();
     App::handle(req, res);
     string response_string = http.constructResponse(res);

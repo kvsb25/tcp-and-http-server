@@ -1,13 +1,14 @@
 #pragma once
 #include "utils.hpp"
 #include <vector>
+#include <sstream>
 
 namespace http{
     struct Response{
         int status_code;
         std::string status_message;
         std::unordered_map<std::string, std::string> headers;
-        std::string body;
+        std::stringstream body;
 
         Response();
         Response& send(std::string& data);
