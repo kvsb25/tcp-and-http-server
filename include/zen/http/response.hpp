@@ -9,6 +9,7 @@ namespace http{
         std::unordered_map<std::string, std::string> headers;
         std::string body;
 
+        Response();
         Response& send(std::string& data);
         Response& status(int status);
         Response& header(std::pair<std::string, std::string>& key_value_pair);
