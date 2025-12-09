@@ -21,6 +21,12 @@ namespace http
         return *this;
     }
 
+    Response& Response::json(std::string& json_string){
+        body = json_string;
+        headers["Content-Type"] = "application/json";
+        return *this;
+    }
+
     Response& Response::sendFile(std::string& filePath){
         std::ifstream file(filePath);
         bool success = false;
@@ -51,6 +57,11 @@ namespace http
         return *this;
     }
 
+    // Response& Response::setHeader(std::string key, std::string value){
+    //     headers.insert({key, value});
+    //     return *this;
+    // }
+
     Response& Response::header(std::vector<std::pair<std::string, std::string>>& headers){
         for(auto header : headers){
             this->headers.insert(header);
@@ -67,4 +78,24 @@ namespace http
         return;
     }
 
+    std::string Response::construct() const {
+        std::stringstream res_ss; // ss is for string stream
+
+        std::string delim = "\r\n";
+        std::string block_delim = "\r\n\r\n";
+
+        std::stringstream hdr_block_ss; 
+
+        res_ss << "HTTP/1.1 " << status_code << " " << status_message << " " << delim;
+        
+        for(const auto& header : this->headers){
+            res_ss << header.first << ": " << header.second << delim;
+        }
+
+        res_ss << delim;
+
+        res_ss << body;
+
+        return res_ss.str();
+    }
 }
