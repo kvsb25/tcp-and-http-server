@@ -57,6 +57,11 @@ namespace http
         return *this;
     }
 
+    // Response& Response::header(std::unordered_map<std::string, std::string>& v_headers){
+    //     headers.insert(v_headers.begin(), v_headers.end());
+    //     return *this;
+    // }
+
     // Response& Response::setHeader(std::string key, std::string value){
     //     headers.insert({key, value});
     //     return *this;
