@@ -23,4 +23,5 @@ public:
     TcpServer(u_short port);
     ~TcpServer();
     void start();  // contains main loop and shoots a thread for client session handling
+    SOCKET getMainSocket();
 };

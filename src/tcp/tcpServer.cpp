@@ -33,3 +33,7 @@ TcpServer::~TcpServer(){
     WSACleanup();
     exit(0);
 }
+
+SOCKET TcpServer::getMainSocket(){
+    return this->main_socket;
+}
