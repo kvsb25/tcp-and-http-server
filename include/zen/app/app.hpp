@@ -13,14 +13,15 @@
 class Zen{
 private:
     std::vector<middleware::Middleware> pipe;
-    TcpServer server;
+    // TcpServer server;
 
 private:
     http::Response& handle(const http::Request& req, http::Response& res);
 
 public:
-    Zen(); // define the port at which you want your server to listen
+    // Zen(int port); // define the port at which you want your server to listen
+    Zen();
     Zen& use(std::function<void(http::Request&, http::Response&)> callback);
     Zen& use(std::string method, std::string path, std::function<void(http::Request&, http::Response&)> callback);
-    void listen(int port, std::function<void(std::string)> callback);
+    void listen(u_short& port, std::function<void(void)> callback);
 };
