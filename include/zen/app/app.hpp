@@ -12,11 +12,11 @@
 
 class Zen{
 private:
-    std::vector<middleware::Middleware> pipe;
+    std::vector<middleware::Middleware*> pipe;
     // TcpServer server;
 
 private:
-    http::Response& handle(const http::Request& req, http::Response& res);
+    http::Response& handle(http::Request& req, http::Response& res, int index = 0);
 
 public:
     // Zen(int port); // define the port at which you want your server to listen
