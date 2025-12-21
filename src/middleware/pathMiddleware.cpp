@@ -38,4 +38,21 @@ namespace middleware
         // initialize path: Route
         this->route.path_regex = r;
     }
+
+    bool PathMiddleware::match(http::Request& req){
+        // return true if the request url and method matches the middleware attributes method and path:Route
+        
+        bool match = false;
+        std::smatch m;
+        
+        // std::regex_match(stringToBeChecked, std::smatch, regexToBeUsed);
+        if(req.method == this->method && std::regex_match(req.path, m, this->route.path_regex)){
+            match = true;
+            for(int i = 1 ; i < m.size() ; i++){
+                req.params.insert({this->route.params[i-1], m[i]});
+            }
+        }
+
+        return match;
+    }
 }
