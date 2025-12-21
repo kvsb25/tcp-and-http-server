@@ -2,13 +2,40 @@
 
 namespace middleware
 {
-    class PathMiddleware : public Middleware
-    {
-    public:
-        std::string method;
-        std::string path;
-        std::function<void(http::Request &req, http::Response &res)> handler;
+    PathMiddleware::PathMiddleware(std::string m, std::string p, std::function<void(http::Request &req, http::Response &res)> callback) : Middleware(Type::PATH), handler(callback), method(m) {
+        // extract path segments with delim as '/'
+        std::stringstream path;
 
-        PathMiddleware(std::string m, std::string p, std::function<void(http::Request &req, http::Response &res)> callback) : Middleware(Type::PATH), handler(callback), method(m), path(p) {}
-    };
+        path << p;
+
+        std::string path_segment;
+        std::vector<std::string> segments;
+
+        while(std::getline(path, path_segment, '/')){
+            if(!path_segment.empty()){
+                segments.push_back(path_segment);
+            }
+        }
+
+        path.clear();
+        
+        // construct regex for each segment. Static and Param segments
+        std::stringstream regex_temp;
+        for(auto segment : segments){
+            // Param segment
+            if(segment[0] == ':'){
+                regex_temp << "/([^/]+)";
+                this->route.params.push_back(segment.substr(1));
+            // Static segment 
+            } else {
+                regex_temp << "/" << segment;
+            }
+        }
+
+        // full path regex. 
+        std::regex r(regex_temp.str());
+
+        // initialize path: Route
+        this->route.path_regex = r;
+    }
 }
