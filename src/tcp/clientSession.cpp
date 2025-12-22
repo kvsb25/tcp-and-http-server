@@ -100,4 +100,5 @@ void ClientSession::closeSession(){
             << WSAGetLastError() 
             << std::endl;
     }
+    socket = INVALID_SOCKET;
 }

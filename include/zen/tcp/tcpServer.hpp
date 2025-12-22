@@ -3,16 +3,9 @@
 #include<iostream>
 #include<winsock2.h>
 
-void log(const std::string& message){
-    std::cout << message << std::endl;
-}
+void log(const std::string& message);
 
-void exitWithError(const std::string& errorMessage){
-    std::cerr << WSAGetLastError() << std::endl;
-    log("ERROR: " + errorMessage);
-    WSACleanup();
-    exit(1);
-}
+void exitWithError(const std::string& errorMessage);
 
 class TcpServer{
 private:
@@ -23,5 +16,5 @@ public:
     TcpServer(u_short port);
     ~TcpServer();
     void start();  // contains main loop and shoots a thread for client session handling
-    SOCKET getMainSocket();
+    SOCKET& getMainSocket();
 };

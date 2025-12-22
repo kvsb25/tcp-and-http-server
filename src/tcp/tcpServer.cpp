@@ -1,5 +1,16 @@
 #include "../../include/zen/tcp/tcpServer.hpp"
 
+void log(const std::string& message){
+    std::cout << message << std::endl;
+}
+
+void exitWithError(const std::string& errorMessage){
+    std::cerr << WSAGetLastError() << std::endl;
+    log("ERROR: " + errorMessage);
+    WSACleanup();
+    exit(1);
+}
+
 TcpServer::TcpServer(u_short port)
 {
     if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
@@ -34,6 +45,6 @@ TcpServer::~TcpServer(){
     exit(0);
 }
 
-SOCKET TcpServer::getMainSocket(){
+SOCKET& TcpServer::getMainSocket(){
     return this->main_socket;
 }
