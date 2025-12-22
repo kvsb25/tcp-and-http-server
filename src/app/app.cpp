@@ -42,7 +42,7 @@ Zen& Zen::use(std::string method, std::string path, std::function<void(http::Req
     pipe.push_back(mw);
 }
 
-void Zen::listen(u_short& port, std::function<void(void)> callback){
+void Zen::listen(const u_short& port, std::function<void(void)> callback){
     TcpServer server(port);
     callback();
 
