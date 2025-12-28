@@ -10,3 +10,5 @@ if ($LASTEXITCODE -eq 0) {
 } else {
     Write-Host "Compilation failed. See errors above."
 }
+
+# Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass; .\tcp.ps1
