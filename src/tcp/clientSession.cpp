@@ -15,11 +15,14 @@ ClientSession::~ClientSession(){
 std::string ClientSession::recvFromClient(){
     int bytesRecv;
     int totalBytesRecv = 0;
-    int retry = 5;
+    int contentLen = 0;
+    int retry = 5; // replace retry with a timeout strategy
+    bool headersReceived = false;
 
     if(buff.empty())
         buff.resize((int)DEFAULT_BUFLEN);
 
+    // loop to continuously receive data from socket kernel buffer to app session buffer
     while(true){
         if( buff.size() == totalBytesRecv){
             buff.resize(buff.size()*2);
@@ -34,14 +37,43 @@ std::string ClientSession::recvFromClient(){
         // call recv(for client's socket, buff starting mem addr, available space that can be filled, remote entity closes the connection)
         bytesRecv = recv( // recv from winsock
             this->socket, 
-            buff.data() + totalBytesRecv, 
-            buff.size() - totalBytesRecv, 
+            buff.data() + totalBytesRecv, // pointer to buffer to receive incoming data
+            buff.size() - totalBytesRecv, // space left on buffer
             0
         );
 
         // check if all data received 
         if(bytesRecv > 0){
             totalBytesRecv += bytesRecv;
+            
+            // break the loop when all data is received, data with body if(Content length) else till '\r\n\r\n'
+            std::string data(buff.data(), totalBytesRecv);
+            size_t endOfHeaders = data.find("\r\n\r\n");
+            
+            if(endOfHeaders != std::string::npos && !headersReceived){
+                headersReceived = true;
+
+                size_t pos = data.find("Content-Length:");
+                if(pos != std::string::npos){
+                    pos += strlen("Content-Length:");
+                    size_t end = data.find("\r\n", pos);
+                    std::string contentLenTemp = data.substr(pos, end-pos);
+                    contentLen = (int)std::stoul(contentLenTemp);  
+                }
+
+                // if headers received and content length == 0
+                if((int)contentLen == 0){
+                    break; // headers complete, no content so stop reading
+                }
+            }
+            
+            if(headersReceived && contentLen > 0){
+                size_t bodyBytes = totalBytesRecv - (endOfHeaders + 4);
+                if(bodyBytes >= contentLen){
+                    break;
+                }
+            }
+
             retry = 5;
         } else if(bytesRecv == 0) {
             break;
