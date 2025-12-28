@@ -18,6 +18,7 @@ std::string ClientSession::recvFromClient(){
     int contentLen = 0;
     int retry = 5; // replace retry with a timeout strategy
     bool headersReceived = false;
+    size_t endOfHeaders = std::string::npos;
 
     if(buff.empty())
         buff.resize((int)DEFAULT_BUFLEN);
@@ -47,8 +48,12 @@ std::string ClientSession::recvFromClient(){
             totalBytesRecv += bytesRecv;
             
             // break the loop when all data is received, data with body if(Content length) else till '\r\n\r\n'
-            std::string data(buff.data(), totalBytesRecv);
-            size_t endOfHeaders = data.find("\r\n\r\n");
+
+            std::string data(buff.data(), totalBytesRecv); // optimize this, we are building the data string on each iteration which is hindering performance
+            
+            if(endOfHeaders == std::string::npos){
+                endOfHeaders = data.find("\r\n\r\n");
+            }
             
             if(endOfHeaders != std::string::npos && !headersReceived){
                 headersReceived = true;
