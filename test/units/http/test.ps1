@@ -1,0 +1,2 @@
+g++ "..\..\..\src\http\request.cpp" "..\..\..\src\http\response.cpp" "test.cpp" -o test; 
+if($?){.\test.exe};
