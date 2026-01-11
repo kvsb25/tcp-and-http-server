@@ -4,11 +4,13 @@
 
 class Tester{
 public:
-    http::Request* req;
-    http::Request* res;
+    http::Request* ref_req;
+    http::Request* ref_res;
+    std::string ref_req_str;
+    std::string ref_res_str;
 
 public:
-    Tester(std::string& req_string);
+    Tester(std::string& ref_req_string, std::string& ref_res);
     ~Tester();
-    std::string& result();
+    bool test(std::string& req_str, std::string& res_str);
 };
