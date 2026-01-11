@@ -8,8 +8,8 @@ namespace http
         status_message = message_for_status.at(200);
 
         auto iso = []{ auto t=time(nullptr); char b[32]; strftime(b,32,"%Y-%m-%dT%H:%M:%SZ", gmtime(&t)); return std::string(b); }();
-        headers["date"] = iso;
-        headers["connection"] = "close";
+        headers["Date"] = iso;
+        headers["Connection"] = "close";
         headers["Content-Length"] = "0";
         headers["Content-Type"] = "text/html";
     }
