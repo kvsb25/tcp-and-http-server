@@ -11,7 +11,7 @@ namespace http
         headers["Date"] = iso;
         headers["Connection"] = "close";
         headers["Content-Length"] = "0";
-        headers["Content-Type"] = "text/html";
+        headers["Content-Type"] = "text/html; charset=UTF-8";
     }
 
     Response& Response::send(std::string &data)
