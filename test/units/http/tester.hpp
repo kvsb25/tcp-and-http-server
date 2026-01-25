@@ -25,8 +25,6 @@ class Tester{
     public:
     ParsedRequest ref_req;
     ParsedResponse ref_res;
-    std::string ref_req_str;
-    std::string ref_res_str;
     
     public:
     Tester(ParsedRequest& ref_parsed_req, ParsedResponse& ref_parsed_res);
