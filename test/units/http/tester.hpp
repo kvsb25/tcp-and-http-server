@@ -2,6 +2,9 @@
 #include "../../../include/zen/http/http.hpp"
 #include <sstream>
 
+template<typename T>
+void validate(bool& pass, const T& actual, const T& expected, const std::string& field);
+
 struct ParsedRequest {
     std::string method;
     std::string path;
@@ -31,4 +34,4 @@ class Tester{
     bool wireFormatTest(std::string& req_str, std::string& res_str);
 };
 
-void prints_headers(std::unordered_map<std::string, std::string>& map); // prints req headers if req = true else prints response headers
+void print_headers(std::unordered_map<std::string, std::string>& map); // prints req headers if req = true else prints response headers
