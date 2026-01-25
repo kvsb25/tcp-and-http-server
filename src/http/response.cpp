@@ -24,6 +24,7 @@ namespace http
     Response& Response::json(const std::string& json_string){
         body = json_string;
         headers["Content-Type"] = "application/json";
+        headers["Content-Length"] = std::to_string(json_string.length());
         return *this;
     }
 
