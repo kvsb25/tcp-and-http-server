@@ -39,7 +39,9 @@ namespace http
             auto colon_pos = line.find(':');
             if(colon_pos == std::string::npos) continue; // ignore malformed header
             std::string hdr_key = line.substr(0,colon_pos);
+            if(!hdr_key.empty() && hdr_key.back() == '\r') hdr_key.pop_back();
             std::string hdr_value = line.substr(colon_pos+1);
+            if(!hdr_value.empty() && hdr_value.back() == '\r') hdr_value.pop_back();
             this->headers[hdr_key] = hdr_value;
         }
 
