@@ -34,14 +34,16 @@ bool Tester::wireFormatTest(std::string& req_str, std::string& res_str)
             std::cout << "ERROR: Request 'headers' mismatch with ref\n\n"
                 << "test:\n";
             for(auto header : test_req->headers){
-                std::cout << header.first << ':' << header.second << std::endl;
+                std::cout << header.first << ':' << header.second << ';' << "[len:"<< header.first.length() << "," << header.second.length() <<"]" <<std::endl;
             }
+            std::cout << "========length: " << test_req->headers.size() << "========" <<std::endl;
 
             std::cout<<std::endl;
             std::cout<<"ref:\n";
             for(auto header : ref_req.headers){
-                std::cout << header.first << ':' << header.second << std::endl;
+                std::cout << header.first << ':' << header.second << ';' << "[len:"<< header.first.length() << "," << header.second.length() <<"]" <<std::endl;
             }
+            std::cout << "========length: " << ref_req.headers.size() << "========" <<std::endl;
             std::cout<<std::endl;
         }
         if(test_req->path != ref_req.path){
@@ -75,15 +77,18 @@ bool Tester::wireFormatTest(std::string& req_str, std::string& res_str)
                 << "test_res->headers: \n";
 
             for(auto header: test_res->headers){
-                std::cout << header.first << ':' << header.second << std::endl;
+                std::cout << header.first << ':' << header.second << ';' << "[len:"<< header.first.length() << "," << header.second.length() <<"]" <<std::endl;
             }
+            std::cout << "========length: " << test_res->headers.size() << "========" <<std::endl;
 
             std::cout << std::endl;
             std::cout << "ref_res.headers: \n";
 
-            for(auto header: test_res->headers){
-                std::cout << header.first << ':' << header.second << std::endl;
+            for(auto header: ref_res.headers){
+                std::cout << header.first << ':' << header.second << ';' << "[len:"<< header.first.length() << "," << header.second.length() <<"]" <<std::endl;
             }
+            std::cout << "========length: " << ref_res.headers.size() << "========" <<std::endl;
+            std::cout<<std::endl;
         }
         
     delete test_req;
