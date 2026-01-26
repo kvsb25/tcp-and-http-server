@@ -17,9 +17,9 @@ namespace middleware{
     public:
         std::string method;
         Route route;
-        std::function<void(http::Request& req, http::Response& res)> handler;
+        Handler handler;
     public:
-        PathMiddleware(std::string m , std::string p, std::function<void(http::Request& req, http::Response& res)> callback);
+        PathMiddleware(std::string m , std::string p, Handler callback);
         bool match(http::Request& req);
     };
 }

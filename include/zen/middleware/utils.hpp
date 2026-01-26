@@ -3,6 +3,9 @@
 #include <iostream>
 
 namespace middleware{
+    
+    using Handler = std::function<void(http::Request& req, http::Response& res)>;
+    
     enum class Type{
         DEFAULT,
         PATH

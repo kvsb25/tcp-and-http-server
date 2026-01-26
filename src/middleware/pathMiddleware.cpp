@@ -2,7 +2,7 @@
 
 namespace middleware
 {
-    PathMiddleware::PathMiddleware(std::string m, std::string p, std::function<void(http::Request &req, http::Response &res)> callback) : Middleware(Type::PATH), handler(callback), method(m) {
+    PathMiddleware::PathMiddleware(std::string m, std::string p, Handler callback) : Middleware(Type::PATH), handler(callback), method(m) {
         // extract path segments with delim as '/'
         std::stringstream path;
 

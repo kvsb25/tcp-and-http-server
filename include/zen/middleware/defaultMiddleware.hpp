@@ -6,7 +6,7 @@
 namespace middleware{
     class DefaultMiddleware : public Middleware{
     public:
-        std::function<void(http::Request& req, http::Response& res)> handler;
-        DefaultMiddleware(std::function<void(http::Request& req, http::Response& res)> callback);
+        Handler handler;
+        DefaultMiddleware(Handler callback);
     };
 }
