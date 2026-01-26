@@ -73,9 +73,9 @@ int main(){
         "\r\n"
         "{ \"message\": \"API Framework Working\" }",
 
-        "HTTP/1.1 201 Created\r\n"
+        "HTTP/1.1 200 OK\r\n"
         "Content-Type: application/json\r\n"
-        "Content-Length: 36\r\n"
+        "Content-Length: 38\r\n"
         "Connection: close\r\n"
         "\r\n"
         "{ \"status\": \"success\", \"id\": 101 }"
@@ -123,13 +123,13 @@ int main(){
         },
         {
             "HTTP/1.1",
-            201,
-            "Created",
+            200,
+            "OK",
             {
-                {"Content-Type", "application/json"},
+                {"Date", iso},
                 {"Connection", "close"},
-                {"Content-Length", "36"},
-                {"Date", iso}
+                {"Content-Length", "34"},
+                {"Content-Type", "application/json"}
             },
             "{ \"status\": \"success\", \"id\": 101 }"
         }
