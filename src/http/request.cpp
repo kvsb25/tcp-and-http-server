@@ -52,8 +52,9 @@ namespace http
             size_t content_len = 0;
             try{
                 content_len = std::stoul(it->second); // string to unsigned long
+                // std::cout << "REQUEST CONSTRUCTOR - HTTP REQUEST BODY PARSING" << content_len << std::endl;
             } catch (...) {throw std::runtime_error("Invalid Content-Length");}
-            if(body_pos + content_len > req_len){
+            if(body_pos + content_len >= req_len){
                 this->body = raw.substr(body_pos, content_len);
             }
         } else {
