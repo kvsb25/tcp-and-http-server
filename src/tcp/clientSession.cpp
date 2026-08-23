@@ -68,6 +68,9 @@ std::string ClientSession::recvFromClient(){
             if(bytesRecv > 0){
                 totalBytesRecv += bytesRecv;
                 
+                /* We could have just received all the bytes (up to a maximum size limit) and 
+                then parsed it later in the HTTP layer of the framework */
+
                 // break the loop when all data is received, data with body if(Content length) else till '\r\n\r\n'
                 // this is to prevent the application from hanging when header Connection: Keep-Alive exists in the request
 
@@ -84,8 +87,8 @@ std::string ClientSession::recvFromClient(){
                     if(pos != std::string::npos){
                         pos += strlen("Content-Length:");
                         size_t end = data.find("\r\n", pos);
-                        std::string contentLenTemp = data.substr(pos, end-pos);
-                        contentLen = (int)std::stoul(contentLenTemp);  
+                        std::string contentLenTemp = data.substr(pos, end - pos);
+                        contentLen = (int)std::stoul(contentLenTemp);
                     }
 
                     // if headers received and content length == 0
@@ -144,7 +147,6 @@ void ClientSession::sendToClient(const std::string& res){
     int retry = 5;
 
     try {
-
 
         while(totalSent < length){
             int bytesSent = send(

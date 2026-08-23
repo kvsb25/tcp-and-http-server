@@ -25,7 +25,11 @@ namespace http{
         Response& header(std::pair<std::string, std::string>& key_value_pair);
         // Response& setHeader(std::string key, std::string value);
         Response& header(std::vector<std::pair<std::string, std::string>>& headers);
+
+        // set what to send as response according to client accepted response format
         void format(const std::string& header_to_look_for, const FormatHandlerMap& handler_map);
+        
+        
         void redirect(const std::string& absolute_url);
         std::string construct() const;
     };

@@ -14,6 +14,7 @@ namespace middleware{
         ERR
     };
 
+    // an interface class
     class Middleware {
     public:
         Type type;

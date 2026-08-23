@@ -31,7 +31,7 @@ TcpServer::TcpServer(u_short port)
         }
     } catch (const WinsockErr& e){
         if(!e.cleaned){
-            WSACleanup();   
+            WSACleanup();
         }
         throw CriticalErr(e.what());
     } catch (const std::runtime_error& e){

@@ -14,7 +14,6 @@ void Zen::handle(http::Request& req, http::Response& res, int index, const ZenEr
             {
                 auto *dmw = static_cast<middleware::DefaultMiddleware *>(mw); // down cast
                 dmw->handler(req, res);
-                // give flag -02 or -03 with gcc to leverage tail call optimization
             }
             else if (mw->type == middleware::Type::PATH)
             {
@@ -28,6 +27,7 @@ void Zen::handle(http::Request& req, http::Response& res, int index, const ZenEr
         }
         else
         {
+            // this framework can only handle error middlewares at the last of the middleware pipeline 
             if (mw->type == middleware::Type::ERR)
             {
                 auto *emw = static_cast<middleware::ErrorMiddleware *>(mw);
