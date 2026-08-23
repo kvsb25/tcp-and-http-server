@@ -28,16 +28,17 @@ namespace http{
         return pq;
     }
 
-    std::string ContentNegotiator::match(const FormatHandlerMap& mp, const FormatPriority& vals){
-        std::string result = "DEFAULT";
+    std::string ContentNegotiator::match(const FormatHandlerMap& mp, FormatPriority& vals){
+        // std::string result = "DEFAULT";
 
-        for(int i = 0; i < vals.size(); i++){
+        while(!vals.empty()){
             auto it = mp.find(vals.top().second);
             if(it != mp.end()){
-                result = (*it).first;
+                return (*it).first;
             }
+            vals.pop();
         }
 
-        return result;
+        return "DEFAULT";
     }
 }
